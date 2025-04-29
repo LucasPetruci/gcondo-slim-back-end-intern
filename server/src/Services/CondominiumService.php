@@ -80,10 +80,6 @@ class CondominiumService
             throw new HttpUnprocessableEntityException('Zip code is required');
         }
 
-        if (empty($data['url'])) {
-            throw new HttpUnprocessableEntityException('URL is required');
-        }
-
         // Validate ZIP code format
         if (!preg_match('/^\d{8}$/', $data['zip_code'])) {
             throw new HttpUnprocessableEntityException('Invalid ZIP code format');
