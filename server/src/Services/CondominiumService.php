@@ -84,5 +84,10 @@ class CondominiumService
         if (!preg_match('/^\d{8}$/', $data['zip_code'])) {
             throw new HttpUnprocessableEntityException('Invalid ZIP code format');
         }
+        
+        //Validate duplicated URL - error handler
+        if (Condominium::where('url', $data['url'])->exists()) {
+            throw new HttpUnprocessableEntityException('URL already exists');
+        }
     }
 }
