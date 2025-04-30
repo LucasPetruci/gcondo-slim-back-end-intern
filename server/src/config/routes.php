@@ -2,6 +2,7 @@
 
 use App\Controllers\CondominiumController;
 use App\Controllers\UnitController;
+use App\Controllers\ReservationController;
 use App\Http\Response\ResponseBuilder;
 use Slim\Routing\RouteCollectorProxy;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -32,4 +33,13 @@ return function (App $app) {
         $group->put('/{id}', [UnitController::class, 'update']);
         $group->delete('/{id}', [UnitController::class, 'delete']);
     });
+    
+    $app->group('/reservations', function (RouteCollectorProxy $group) {
+        $group->get('', [ReservationController::class, 'list']);
+        $group->get('/{id}', [ReservationController::class, 'find']);
+        $group->post('', [ReservationController::class, 'create']);
+        $group->put('/{id}', [ReservationController::class, 'update']);
+        $group->delete('/{id}', [ReservationController::class, 'delete']);
+    });
+
 };
