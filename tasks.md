@@ -101,7 +101,7 @@ Além disso, como não foi especificado o sistema também permite a criação co
 
 <!-- Tarefa 2 -->
 
-## Tarefa 2: Melhorar a validação da  `url` duplicada
+## Tarefa 2: Melhorar a validação da URL duplicada
 
 Ao tentar criar um novo condomínio com uma URL já existente, o sistema retornava o seguinte erro:
 
@@ -154,4 +154,203 @@ Update condominium - Put:
 }
 ```
 
+## Tarefa 3: Adicionar a possibilidade de criar reservas
+
 <!-- Tarefa 3 -->
+
+A funcionalidade de reservas permite que moradores de um condomínio reservem espaços, como salões de festa, vinculados à sua unidade. Toda reserva está diretamente associada a uma **unidade** do condomínio.
+
+Cada reserva deve conter obrigatoriamente os campos:
+
+* **Nome** : identificação da reserva
+* **Unidade** : referência à unidade do morador
+* **Quantidade de pessoas** : total de pessoas previstas no evento
+* **Data** : data da reserva no formato ISO 8601 (`YYYY-MM-DD`)
+
+A seguir, foi criada a migration `reservations` com os campos: `id`, `name`, `unit_id`, `people_quantity`, `date`, `created_at`, `updated_at` e `deleted_at`.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use Phinx\Migration\AbstractMigration;
+use App\Helpers\PhinxHelper;
+
+final class Reservation extends AbstractMigration
+{
+     public function change(): void
+    {
+        $table = $this->table('reservations')
+            ->addColumn('name', 'string', ['null' => false])
+            ->addColumn('people_quantity', 'integer', ['null' => false])
+            ->addColumn('date', 'date', ['null' => false]);
+
+        PhinxHelper::setForeignColumn($table, 'unit_id', 'units');
+        PhinxHelper::setDatetimeColumns($table); 
+
+        $table->create();
+    }
+}
+
+```
+
+Após a migration foi criado o model, Reservation.php:
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Reservation extends Model
+{
+    protected $fillable = [
+        'name',
+        'unit_id',
+        'people_quantity',
+        'date'
+    ];
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
+    }
+}
+
+```
+
+Após, criei o ReservationService.php
+
+```php
+<?php
+
+namespace App\Services;
+
+use App\Models\Reservation;
+use App\Http\Error\HttpNotFoundException;
+use App\Http\Error\HttpUnprocessableEntityException;
+use App\Services\UnitService;
+
+class ReservationService
+{
+    public function __construct(protected UnitService $unitService) {}
+
+    public function list()
+    {
+        $reservations = Reservation::with('unit')->get();
+
+        return $reservations;
+    }
+
+    public function find(int $id): Reservation
+    {
+        $reservation = Reservation::with('unit')->find($id);
+
+        if (!$reservation) {
+            throw new HttpNotFoundException('Reservation not found');
+        }
+
+        return $reservation;
+    }
+
+    public function create(array $data): Reservation
+    {
+        $this->validateReservationData($data);
+
+        $this->validateUnit($data['unit_id']);
+
+        $reservation = Reservation::create([
+            'name' => $data['name'],
+            'unit_id' => $data['unit_id'],
+            'people_quantity' => $data['people_quantity'],
+            'date' => $data['date']
+        ]);
+
+        return $reservation;
+    }
+
+    public function update(int $id, array $data): Reservation
+    {
+        $reservation = $this->find($id);
+
+        $this->validateReservationData($data);
+        $this->validateUnit($data['unit_id']);
+
+        $reservation-> fill([
+            'name' => $data['name'],
+            'unit_id' => $data['unit_id'],
+            'people_quantity' => $data['people_quantity'],
+            'date' => $data['date']
+        ]);
+
+        $reservation->save();
+      
+        return $reservation;
+    }
+
+    public function delete(int $id): bool
+    {
+        $reservation = $this->find($id);
+        return $reservation->delete();
+    }
+
+    /** @throws HttpNotFoundException */
+    private function validateUnit(int $unitId): void
+    {
+        $this->unitService->find($unitId);
+    }
+
+
+    private function validateReservationData(array $data): void
+    {
+        if (empty($data['name'])) {
+            throw new HttpUnprocessableEntityException('Name is required');
+        }
+
+        if (empty($data['unit_id'])) {
+            throw new HttpUnprocessableEntityException('Unit ID is required');
+        }
+
+        if (!isset($data['people_quantity']) || is_null($data['people_quantity']) ||
+        !is_numeric($data['people_quantity']) || $data['people_quantity'] <= 0 ||
+        $data['people_quantity'] != (int)$data['people_quantity']) {
+            throw new HttpUnprocessableEntityException('People quantity must be a non-negative integer');
+        }
+
+
+        if (empty($data['date']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['date'])) {
+            throw new HttpUnprocessableEntityException('Date must be in YYYY-MM-DD format');
+        }
+      
+    }
+}
+
+```
+
+A validação do campo `people_quantity` foi implementada seguindo o mesmo padrão usado para `bedroom_count` no `UnitService`, garantindo que apenas inteiros positivos sejam aceitos.
+
+Após criar o Service, criei o Controller e as rotas, essas não serão colocadas aqui porque seguem o mesmo padrão dos outros controller e rotas
+
+## Extra
+
+Como reservation está associado a unidades, adicionei uma verificação ao tentar deletar uma unidade que tenha reserva. Seguindo o mesmo padrão de Condiminio e Unidade.
+UnitService.php:
+
+```php
+ public function delete(int $id): bool
+    {
+        $unit = $this->find($id);
+
+        // Check if unit has reservations
+        if ($unit->reservations()->count() > 0) {
+            throw new HttpBadRequestException('Cannot delete unit with reservations');
+        }
+
+        $deleted = $unit->delete();
+
+        return $deleted;
+    }
+
+```
