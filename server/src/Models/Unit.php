@@ -17,4 +17,8 @@ class Unit extends Model
     {
         return $this->belongsTo(Condominium::class);
     }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

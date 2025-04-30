@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Error\HttpNotFoundException;
+use App\Http\Error\HttpBadRequestException;
 use App\Http\Error\HttpUnprocessableEntityException;
 use App\Models\Unit;
 use App\Services\CondominiumService;
@@ -76,6 +77,11 @@ class UnitService
     public function delete(int $id): bool
     {
         $unit = $this->find($id);
+
+        // Check if unit has reservations
+        if ($unit->reservations()->count() > 0) {
+            throw new HttpBadRequestException('Cannot delete unit with reservations');
+        }
 
         $deleted = $unit->delete();
 
