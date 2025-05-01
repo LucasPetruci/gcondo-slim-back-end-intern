@@ -75,6 +75,11 @@ class LocationService
     public function delete(int $id): bool
     {
         $location = $this->find($id);
+        
+        // check if there are any reservations associated with the location
+        if ($location->reservations()->count() > 0) {
+            throw new HttpBadRequestException('Cannot delete location with reservations');
+        }
     
         return $location->delete();
     }
