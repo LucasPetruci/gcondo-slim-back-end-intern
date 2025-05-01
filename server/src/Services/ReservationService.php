@@ -9,18 +9,18 @@ use App\Services\UnitService;
 
 class ReservationService
 {
-    public function __construct(protected UnitService $unitService) {}
+    public function __construct(protected UnitService $unitService, protected LocationService $locationService) {}
 
     public function list()
     {
-        $reservations = Reservation::with('unit')->get();
+        $reservations = Reservation::with(['unit', 'location'])->get();
 
         return $reservations;
     }
 
     public function find(int $id): Reservation
     {
-        $reservation = Reservation::with('unit')->find($id);
+        $reservation = Reservation::with(['unit', 'location'])->find($id);
 
         if (!$reservation) {
             throw new HttpNotFoundException('Reservation not found');
@@ -35,11 +35,17 @@ class ReservationService
 
         $this->validateUnit($data['unit_id']);
 
+        if (isset($data['location_id'])) {
+            $this->validateLocation($data['location_id']);
+            $this->validateLocationConsistency($data['unit_id'], $data['location_id']);
+        }
+
         $reservation = Reservation::create([
             'name' => $data['name'],
             'unit_id' => $data['unit_id'],
             'people_quantity' => $data['people_quantity'],
-            'date' => $data['date']
+            'date' => $data['date'],
+            'location_id' => $data['location_id'] ?? null
         ]);
 
         return $reservation;
@@ -52,11 +58,18 @@ class ReservationService
         $this->validateReservationData($data);
         $this->validateUnit($data['unit_id']);
 
+        if (isset($data['location_id'])) {
+            $this->validateLocation($data['location_id']);
+            $this->validateLocationConsistency($data['unit_id'], $data['location_id']);
+        }
+
+
         $reservation-> fill([
             'name' => $data['name'],
             'unit_id' => $data['unit_id'],
             'people_quantity' => $data['people_quantity'],
-            'date' => $data['date']
+            'date' => $data['date'],
+            'location_id' => $data['location_id'] ?? null
         ]);
 
         $reservation->save();
@@ -76,6 +89,24 @@ class ReservationService
         $this->unitService->find($unitId);
     }
 
+    /** @throws HttpNotFoundException */
+    private function validateLocation(int $locationId): void
+    {
+        $this->locationService->find($locationId);
+    }
+
+    /** @throws HttpUnprocessableEntityException */
+    private function validateLocationConsistency(int $unitId, int $locationId): void
+    {
+        $unit = $this->unitService->find($unitId);
+        $location = $this->locationService->find($locationId);
+
+        if ($location->condominium_id !== $unit->condominium_id) {
+            throw new HttpUnprocessableEntityException(
+                'Location and unit must be in the same condominium'
+            );
+        }
+    }
 
     private function validateReservationData(array $data): void
     {
@@ -85,6 +116,10 @@ class ReservationService
 
         if (empty($data['unit_id'])) {
             throw new HttpUnprocessableEntityException('Unit ID is required');
+        }
+
+        if (isset($data['location_id']) && !is_numeric($data['location_id'])) {
+            throw new HttpUnprocessableEntityException('Location ID must be a number when provided');
         }
 
         if (!isset($data['people_quantity']) || is_null($data['people_quantity']) ||
