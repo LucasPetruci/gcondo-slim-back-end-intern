@@ -18,4 +18,8 @@ class Condominium extends Model
     {
         return $this->hasMany(Unit::class);
     }
+    public function locations()
+    {
+        return $this->hasMany(Location::class);
+    }
 }
