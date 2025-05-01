@@ -3,6 +3,7 @@
 use App\Controllers\CondominiumController;
 use App\Controllers\UnitController;
 use App\Controllers\ReservationController;
+use App\Controllers\LocationController;
 use App\Http\Response\ResponseBuilder;
 use Slim\Routing\RouteCollectorProxy;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -42,4 +43,11 @@ return function (App $app) {
         $group->delete('/{id}', [ReservationController::class, 'delete']);
     });
 
+    $app->group('/locations', function (RouteCollectorProxy $group) {
+        $group->get('', [LocationController::class, 'list']);
+        $group->get('/{id}', [LocationController::class, 'find']);
+        $group->post('', [LocationController::class, 'create']);
+        $group->put('/{id}', [LocationController::class, 'update']);
+        $group->delete('/{id}', [LocationController::class, 'delete']);
+    });
 };
