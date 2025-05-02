@@ -35,9 +35,12 @@ class ReservationService
 
         $this->validateUnit($data['unit_id']);
 
+        $this->checkDateConflict($data['unit_id'], $data['date']);
+
         if (isset($data['location_id'])) {
             $this->validateLocation($data['location_id']);
             $this->validateLocationConsistency($data['unit_id'], $data['location_id']);
+            $this->validateLocationCapacity($data['location_id'], $data['people_quantity']);
         }
 
         $reservation = Reservation::create([
@@ -58,9 +61,12 @@ class ReservationService
         $this->validateReservationData($data);
         $this->validateUnit($data['unit_id']);
 
+        $this->checkDateConflict($data['unit_id'], $data['date']);
+
         if (isset($data['location_id'])) {
             $this->validateLocation($data['location_id']);
             $this->validateLocationConsistency($data['unit_id'], $data['location_id']);
+            $this->validateLocationCapacity($data['location_id'], $data['people_quantity']);
         }
 
 
@@ -104,6 +110,30 @@ class ReservationService
         if ($location->condominium_id !== $unit->condominium_id) {
             throw new HttpUnprocessableEntityException(
                 'Location and unit must be in the same condominium'
+            );
+        }
+    }
+
+    private function validateLocationCapacity(int $locationId, int $peopleQuantity): void
+    {
+        $location = $this->locationService->find($locationId);
+            
+            if ($peopleQuantity > $location->max_people) {
+                throw new HttpUnprocessableEntityException(
+                    'People quantity exceeds location capacity'
+                );
+            }
+    }
+
+    private function checkDateConflict(int $unitId, string $date): void
+    {
+        $conflictingReservation = Reservation::where('unit_id', $unitId)
+            ->where('date', $date)
+            ->first();
+
+        if ($conflictingReservation) {
+            throw new HttpUnprocessableEntityException(
+                'A reservation already exists for this unit on the specified date'
             );
         }
     }
