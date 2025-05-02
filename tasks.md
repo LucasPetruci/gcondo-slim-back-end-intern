@@ -154,9 +154,9 @@ Update condominium - Put:
 }
 ```
 
-## Tarefa 3: Adicionar a possibilidade de criar reservas
-
 <!-- Tarefa 3 -->
+
+## Tarefa 3: Adicionar a possibilidade de criar reservas
 
 A funcionalidade de reservas permite que moradores de um condomínio reservem espaços, como salões de festa, vinculados à sua unidade. Toda reserva está diretamente associada a uma **unidade** do condomínio.
 
@@ -286,7 +286,7 @@ class ReservationService
         ]);
 
         $reservation->save();
-      
+  
         return $reservation;
     }
 
@@ -323,7 +323,7 @@ class ReservationService
         if (empty($data['date']) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $data['date'])) {
             throw new HttpUnprocessableEntityException('Date must be in YYYY-MM-DD format');
         }
-      
+  
     }
 }
 
@@ -354,3 +354,172 @@ UnitService.php:
     }
 
 ```
+
+## Tarefa Extra: Criar Localização (Salão de Festas)
+
+Adicionar a funcionalidade de gestão de **locais** (salões de festa) e relacionamento opcional com **reservas**, permitindo que os moradores de um condomínio possam reservar espaços, como salões de festa, para eventos. O relacionamento entre **condomínios**, **locais** e **reservas** segue a estrutura:
+
+- Condomínio → Possui N Locais → Recebe N Reservas
+
+Primeiro, criei a migration para a tabela `locations` dentro do container usando o comando `vendor/bin/phinx create Location`. A tabela `locations` foi estruturada para incluir os campos:
+
+- **name** (nome do local)
+- **max_people** (capacidade máxima de pessoas)
+- **square_meters** (metros quadrados, opcional)
+- **condominium_id** (chave estrangeira para associar ao condomínio)
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use App\Helpers\PhinxHelper;
+use Phinx\Migration\AbstractMigration;
+
+final class Location extends AbstractMigration
+{
+   
+    public function change(): void
+    {
+        $table = $this->table('locations')
+            ->addColumn('name', 'string', ['null' => false])
+            ->addColumn('max_people', 'integer')
+            ->addColumn('square_meters', 'float', ['null' => true]);
+
+        PhinxHelper::setForeignColumn($table, 'condominium_id', 'condominiums');
+        PhinxHelper::setDatetimeColumns($table);
+        $table->create();
+
+    }
+}
+
+```
+
+As classes de Controller e Service da Reserva seguem o mesmo padrão que as outras, aqui irei focar mais na lógica da relação entre condominio, local e reserva.
+
+Para permitir a associação entre uma reserva e um local, criei uma nova migration para adicionar o campo `location_id` na tabela `reservations`. O campo `location_id` é opcional e pode ser `null` caso o local não seja especificado.
+
+```php
+<?php
+
+declare(strict_types=1);
+
+use App\Helpers\PhinxHelper;
+use Phinx\Migration\AbstractMigration;
+
+final class CreateReservationLocationRelationship extends AbstractMigration
+{
+    public function change(): void
+    {
+        $table = $this->table('reservations');
+  
+        PhinxHelper::setForeignColumn($table, 'location_id', 'locations', true);
+  
+        $table->update();
+    }
+}
+```
+
+Essa relação é importante para que, ao realizar uma reserva, seja possível passar o `id` do local. O campo `location_id` pode ser `null`, assim, não sendo obrigatória a sua inclusão no corpo da requisição.
+
+### Verificações adicionais 
+
+Após isso, realizei algumas verificações importantes. Uma delas foi a verificação no `ReservationService.php`, onde é validado se o local existe e se ele está no mesmo **condomínio** que a unidade. Isso garante que não seja possível reservar um local em um condomínio diferente do da unidade.
+
+```php
+/** @throws HttpNotFoundException */
+    private function validateLocation(int $locationId): void
+    {
+        $this->locationService->find($locationId);
+    }
+
+    /** @throws HttpUnprocessableEntityException */
+    private function validateLocationConsistency(int $unitId, int $locationId): void
+    {
+        $unit = $this->unitService->find($unitId);
+        $location = $this->locationService->find($locationId);
+
+        if ($location->condominium_id !== $unit->condominium_id) {
+            throw new HttpUnprocessableEntityException(
+                'Location and unit must be in the same condominium'
+            );
+        }
+    }
+
+```
+
+Adicionei uma verificação antes de deletar um local para garantir que não existam **reservas** associadas. Caso existam, a exclusão do local será bloqueada.
+
+```php
+public function delete(int $id): bool
+    {
+        $location = $this->find($id);
+  
+        // check if there are any reservations associated with the location
+        if ($location->reservations()->count() > 0) {
+            throw new HttpBadRequestException('Cannot delete location with reservations');
+        }
+  
+        return $location->delete();
+    }
+
+```
+
+Adicionei algumas verificações adicionais para garantir a integridade das reservas. Caso o usuário tente reservar um local com uma quantidade de pessoas superior à capacidade do local, será retornado um erro de validação. Além disso, implementei uma verificação para evitar que o mesmo local seja reservado para a mesma data, uma vez que não estamos utilizando horário para as reservas.
+
+ReservationService.php
+
+```php
+ private function checkDateConflict(int $unitId, string $date): void
+    {
+        $conflictingReservation = Reservation::where('unit_id', $unitId)
+            ->where('date', $date)
+            ->first();
+
+        if ($conflictingReservation) {
+            throw new HttpUnprocessableEntityException(
+                'A reservation already exists for this unit on the specified date'
+            );
+        }
+    }
+```
+
+```json
+{
+	"statusCode": 422,
+	"error": {
+		"type": "VALIDATION_ERROR",
+		"description": "A reservation already exists for this unit on the specified date"
+	}
+}
+```
+
+No mesmo arquivo, a verificação da capacidade de pessoas
+
+```php
+  private function validateLocationCapacity(int $locationId, int $peopleQuantity): void
+    {
+        $location = $this->locationService->find($locationId);
+      
+            if ($peopleQuantity > $location->max_people) {
+                throw new HttpUnprocessableEntityException(
+                    'People quantity exceeds location capacity'
+                );
+            }
+    }
+```
+
+```json
+{
+	"statusCode": 422,
+	"error": {
+		"type": "VALIDATION_ERROR",
+		"description": "People quantity exceeds location capacity"
+	}
+}
+```
+
+Os testes estão disponíveis no arquivo do **Insomnia** e incluem vários métodos repetidos para garantir a cobertura de diferentes cenários de **reservas** e **locais**. Após adicionar as novas funcionalidades, a coleção de testes foi exportada para garantir que todas as rotas sejam testadas corretamente.
+
+**Muito Obrigado pela oportunidade**
+***Lucas Petruci***
