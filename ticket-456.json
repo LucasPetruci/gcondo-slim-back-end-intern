@@ -1,0 +1,737 @@
+type: collection.insomnia.rest/5.0
+name: Gcondo Slim
+meta:
+  id: wrk_8e0ef8b47f724277a27d622763055691
+  created: 1745883567410
+  modified: 1745883567410
+collection:
+  - name: Condominiums
+    meta:
+      id: fld_9b5ee0f2884743d481eccc268fc585a1
+      created: 1730000000000
+      modified: 1730000000000
+      sortKey: -1745498334975
+    children:
+      - url: "{{ baseUrl }}/condominiums/1"
+        name: Get condominium
+        meta:
+          id: req_193f8bd80d3d47e7ad81daaa7712f80a
+          created: 1730000000000
+          modified: 1745498458463
+          isPrivate: false
+          sortKey: -1745498334979
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/condominiums/8"
+        name: Delete condominium
+        meta:
+          id: req_a567f8454fcc4fe09119b9156acbf48a
+          created: 1730000000000
+          modified: 1745956504405
+          isPrivate: false
+          sortKey: -1745498334982
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/condominiums"
+        name: Create condominium
+        meta:
+          id: req_bab390fcf5084a8c88f063c41c39259f
+          created: 1730000000000
+          modified: 1745901240242
+          isPrivate: false
+          sortKey: -1745498334980
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Residencial Porto Seguro",
+            	"zip_code": "12345678",
+            	"url": "https://www.portoseguro.br"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/condominiums"
+        name: List condominiums
+        meta:
+          id: req_e0434ff7d9e54004b00e8aab95bb41e1
+          created: 1730000000000
+          modified: 1746130202656
+          isPrivate: false
+          sortKey: -1745498334975
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/condominiums/7"
+        name: Update condominium
+        meta:
+          id: req_fd65fbaf656c4502b0caa569dc069773
+          created: 1730000000000
+          modified: 1745947108639
+          isPrivate: false
+          sortKey: -1745498334981
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Residencial Porto Seguro - Atualizado",
+            	"zip_code": "12345678",
+            	"url": "https://www.portoseguro.com.br"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/condominiums"
+        name: Create condominium (empty URL)
+        meta:
+          id: req_ada71a05128a4b278e53487a2e522c01
+          created: 1745901269726
+          modified: 1745901273577
+          isPrivate: false
+          sortKey: -1745498334979.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Residencial Porto Seguro",
+            	"zip_code": "12345678",
+            	"url": ""
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/condominiums"
+        name: Create condominium (URL null)
+        meta:
+          id: req_d576306a232d43a5a89b5c29b86c9ecc
+          created: 1745901604663
+          modified: 1745901610930
+          isPrivate: false
+          sortKey: -1745498334979.75
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Residencial Porto Seguro",
+            	"zip_code": "12345678",
+            	"url": null
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/condominiums"
+        name: Create condominium (duplicated URL)
+        meta:
+          id: req_ce0a0be5ee9f4b6d8044c79f3bdb327b
+          created: 1745943880482
+          modified: 1745943880482
+          isPrivate: false
+          sortKey: -1745498334979.875
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Residencial Porto Seguro",
+            	"zip_code": "12345678",
+            	"url": "https://www.portoseguro.br"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/condominiums/7"
+        name: Update condominium (duplicated URL)
+        meta:
+          id: req_5cb646642ab74f0ea5325daa33b5f6c1
+          created: 1745947137971
+          modified: 1745947147553
+          isPrivate: false
+          sortKey: -1745498334980.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"name": "Residencial Porto Seguro - Atualizado",
+            	"zip_code": "12345678",
+            	"url": "https://www.portoseguro.br"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Units
+    meta:
+      id: fld_dcc66677e1bd45a0a0e5ce163d823733
+      created: 1730000000000
+      modified: 1730000000000
+      sortKey: -1745498334983
+    children:
+      - url: "{{ baseUrl }}/units"
+        name: Create unit
+        meta:
+          id: req_092b2d42420b420ebef18a9d289a802f
+          created: 1730000000000
+          modified: 1746130729367
+          isPrivate: false
+          sortKey: -1745498334985
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"condominium_id": 1,
+            	"name": "101",
+            	"square_meters": 80.5,
+            	"bedroom_count": 2
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/units/1"
+        name: Update unit
+        meta:
+          id: req_0fad5f1fb49a41c99ab57359752554a8
+          created: 1730000000000
+          modified: 1745698406061
+          isPrivate: false
+          sortKey: -1745498334986
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"condominium_id": 1,
+            	"name": "101",
+            	"square_meters": 85.5,
+            	"bedroom_count": 4
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/units/1"
+        name: Get unit
+        meta:
+          id: req_22d4bfd8ccb04f9684e94ad841258df0
+          created: 1730000000000
+          modified: 1745498444645
+          isPrivate: false
+          sortKey: -1745498334984
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/units"
+        name: List units
+        meta:
+          id: req_312b4dce7b5f428c9514369004a39fb9
+          created: 1730000000000
+          modified: 1745698392634
+          isPrivate: false
+          sortKey: -1745498334983
+        method: GET
+        parameters:
+          - id: pair_6067de45527c4cb2a1ded5f8b2257f87
+            name: condominium_id
+            value: "1"
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ baseUrl }}/units/1"
+        name: Delete unit
+        meta:
+          id: req_3789f9af189b40e0a7243b379766ab24
+          created: 1730000000000
+          modified: 1746130930487
+          isPrivate: false
+          sortKey: -1745498334988
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Reservations
+    meta:
+      id: fld_aaba712c2ca54a379691a9967327b620
+      created: 1745955956781
+      modified: 1745955956781
+      sortKey: -1745955956781
+    children:
+      - url: "{{ _.baseUrl }}/reservations"
+        name: List reservations
+        meta:
+          id: req_64d3b261120b46f59f5ee63fafbb9037
+          created: 1745956183695
+          modified: 1746130196922
+          isPrivate: false
+          sortKey: -1745956183695
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/reservations/1"
+        name: Get reservation
+        meta:
+          id: req_8fc466161e194617ad4c98be278ad22c
+          created: 1745956587432
+          modified: 1746130919579
+          isPrivate: false
+          sortKey: -1745956587432
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/reservations"
+        name: Create reservation(with location)
+        meta:
+          id: req_8871362f6b734030a3baa287154545c7
+          created: 1745957033169
+          modified: 1746130957593
+          isPrivate: false
+          sortKey: -1745957033169
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Aniversário de Lucas",
+              "unit_id": 1,
+              "people_quantity": 30,
+              "date": "2025-12-31",
+            	"location_id": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_3caca9a0d29742efa67b881d9319a85f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/reservations/1"
+        name: Update reservation
+        meta:
+          id: req_f0e4ed62071b48f8bfda11e70d30b460
+          created: 1746029560255
+          modified: 1746130913334
+          isPrivate: false
+          sortKey: -1746029560255
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Aniversário de Lucas",
+              "unit_id": 1,
+              "people_quantity": 40,
+              "date": "2025-12-30"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/reservations/1"
+        name: Delete resevation
+        meta:
+          id: req_1f1ab9d8c3b64fea82685d2bad6e2463
+          created: 1746037151009
+          modified: 1746130902165
+          isPrivate: false
+          sortKey: -1746037151009
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/reservations"
+        name: Create reservation(without location)
+        meta:
+          id: req_c3f5dd6878644ee68d562d405308c632
+          created: 1746130968717
+          modified: 1746130973776
+          isPrivate: false
+          sortKey: -1745956810300.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Aniversário de Lucas",
+              "unit_id": 1,
+              "people_quantity": 30,
+              "date": "2025-12-31"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_3caca9a0d29742efa67b881d9319a85f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/reservations"
+        name: Create reservation(Location capacity error)
+        meta:
+          id: req_73c94c5dc900431eaaadbd8dde29f750
+          created: 1746144006669
+          modified: 1746144219102
+          isPrivate: false
+          sortKey: -1745956921734.75
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Aniversário de Lucas",
+              "unit_id": 1,
+              "people_quantity": 300,
+              "date": "2025-12-20",
+            	"location_id": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_3caca9a0d29742efa67b881d9319a85f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/reservations"
+        name: Create reservation(Date conflict error)
+        meta:
+          id: req_6b8885d786e84f87b4b23ae837565bbc
+          created: 1746144035582
+          modified: 1746144035582
+          isPrivate: false
+          sortKey: -1745956866017.625
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "name": "Aniversário de Lucas",
+              "unit_id": 1,
+              "people_quantity": 30,
+              "date": "2025-12-31",
+            	"location_id": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_3caca9a0d29742efa67b881d9319a85f
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Locations
+    meta:
+      id: fld_7d52b9e7b7af4e73b6354b99d5de359a
+      created: 1746122771214
+      modified: 1746122819434
+      sortKey: -1746122771214
+    children:
+      - url: "{{ _.baseUrl }}/locations"
+        name: List locations
+        meta:
+          id: req_5c5336b4f2164b519acd2e3ee736bf2f
+          created: 1746122774308
+          modified: 1746122815580
+          isPrivate: false
+          sortKey: -1746122774308
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/locations/1"
+        name: Get location
+        meta:
+          id: req_24dddee5dfff447ba2010eece179deea
+          created: 1746122820505
+          modified: 1746122853045
+          isPrivate: false
+          sortKey: -1746122820505
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/locations"
+        name: Create location
+        meta:
+          id: req_22a85c89b8b0474793f930a0801858a9
+          created: 1746122856220
+          modified: 1746130750614
+          isPrivate: false
+          sortKey: -1746122856220
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+                "name": "Salão de Festas",
+                "max_people": 100,
+                "square_meters": 150,
+                "condominium_id": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/locations/1"
+        name: Update location
+        meta:
+          id: req_3718d60e8c1148388a312e4be3cf165f
+          created: 1746123139141
+          modified: 1746130885241
+          isPrivate: false
+          sortKey: -1746123139141
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+                "name": "Salão de Festas Atualizado",
+                "max_people": 120,
+                "square_meters": 160.5,
+                "condominium_id": 1
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/locations/1"
+        name: Delete location
+        meta:
+          id: req_77b1f0f711544c4fadc072c5d6bf2ff0
+          created: 1746123246560
+          modified: 1746123399665
+          isPrivate: false
+          sortKey: -1746123246560
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.0.2
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - url: "{{ baseUrl }}"
+    name: Index
+    meta:
+      id: req_c7178ba1e2434dae9dc10be2e6fe5127
+      created: 1730000000000
+      modified: 1745498388598
+      isPrivate: false
+      description: API para gerenciamento de condomínios e unidades
+      sortKey: -1745498334974
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_66feb58cc7774499b9d2b29563fe4b5e
+    created: 1745498346850
+    modified: 1745498346850
+environments:
+  name: Base Environment
+  meta:
+    id: env_e9130e4c3cf84a5bb728e804ff7a32b2
+    created: 1730000000000
+    modified: 1730000000000
+    isPrivate: false
+  data:
+    baseUrl: http://localhost:8080
